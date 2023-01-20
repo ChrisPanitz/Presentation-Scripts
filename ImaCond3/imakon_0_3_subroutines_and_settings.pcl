@@ -1,0 +1,1290 @@
+#----------------------------------------------------------------------------------------
+# Settings
+#----------------------------------------------------------------------------------------
+
+int hab_blocks = 1; #number of habituation blocks
+int hab_cs_plus_av = 3; #number of CS+av presentations in hab block
+int hab_cs_plus_neu = 3; #number of CS+neu presentations in hab block
+int hab_cs_minus = 3; #number of CS- presentations in hab block
+
+int main_blocks = 2; #number of blocks in main phase
+int main_cs_plus_av = 10; #number of CS+av trials in each main block
+int main_cs_plus_neu = 10; #number of CS+neu trials in each main block
+int main_cs_minus = 10; #number of CS- trials in each main block
+
+int ext_blocks = 0;#2; #number of blocks in extinction phase
+int ext_cs_plus_av = 10; #number of CS+av trials in each ext block
+int ext_cs_plus_neu = 10; #number of CS+neu trials in each ext block
+int ext_cs_minus = 10; #number of CS- trials in each rxt block
+
+double rate_cue_plus_av = 0.8; #CS+av reinforcement rate in main phase; value must be between 0.0 and 1.0
+double rate_cue_plus_neu = 0.8; #CS+neu reinforcement rate in main phase; value must be between 0.0 and 1.0
+double rate_cue_minus = 0.8; #CS- reinforcement rate in main phase; value must be between 0.0 and 1.0
+
+int nr_startle_cs_plus_av = 0;#5; #number of startle probes during CS+ in each main block
+int nr_startle_cs_plus_neu = 0;#5; #number of startle probes during CS+ in each main block
+int nr_startle_cs_minus = 0;#5; #number of startle probes during CS- trials in each main block
+int nr_startle_isi_plus_av = 0;#2; #number of startle probes during ISI after CS+ (in each main block)
+int nr_startle_isi_plus_neu = 0;#2; #number of startle probes during ISI after CS+ (in each main block)
+int nr_startle_isi_minus = 0;#2; #number of startle probes during ISI after CS- (in each main block)
+int ext_nr_startle_cs_plus_av = 0;#5; #number of startle probes during CS+ in each extinction block
+int ext_nr_startle_cs_plus_neu = 0;#5; #number of startle probes during CS+ in each extinction block
+int ext_nr_startle_cs_minus = 0;#5; #number of startle probes during CS- trials in each extinction block
+int ext_nr_startle_isi_plus_av = 0;#2; #number of startle probes during ISI after CS+ (in each extinction block)
+int ext_nr_startle_isi_plus_neu = 0;#2; #number of startle probes during ISI after CS+ (in each extinction block)
+int ext_nr_startle_isi_minus = 0;#2; #number of startle probes during ISI after CS- (in each extinction block)
+
+int nr_startle_habs = 0;#5; # number of startle probes in startle habituation
+int starthabmin = 8000; # minimal interval between two startle habituation probes in ms
+int starthabmax = 12000; # maximal interval between two startle habituation probes in ms
+
+int nr_vibro_habs = 5;
+int startvibromin = 8000;
+int startvibromax = 12000;
+
+int cs_dur = 10000;#8000; #CS duration in ms for imaginery group / note that CS duration for real group will be cue_onset + usDur
+int cue_onset = 7000;#5000; #Cue/US onset in ms relative to CS onset
+
+int nrPulses = 25; # must be manually changed in real-SCE, too!!!
+int usDur = 500;
+int shockCode = 1;
+int vibCode = 4;
+
+double rescale_face = 1.3; #factor by which original face pic is rescaled
+int size_geoms = 250; #height of geometric figures
+rgb_color color_square = rgb_color(170,0,0); #color of square (RGB values)
+#rgb_color color_ellipse = rgb_color(0,0,170); #color of circle (RGB values)
+#rgb_color color_hexagon = rgb_color(170,150,0); #color of triangle (RGB values)
+rgb_color color_circle = rgb_color(170,150,0); #color of circle (RGB values)
+rgb_color color_triangle = rgb_color(0,0,170); #color of triangle (RGB values)
+
+int dur_startle = 50; # please indicate length of startle.wav in ms
+int no_startle_begin = 2000; #if you want to have a minimal presentation duration of CS/ISI before startle can occur - delay in ms
+int no_startle_end = 1000; #if you want to have a minimal presentation duration of CS/ISI before startle can occur - delay in ms
+
+int reduce_dB_startle = 9; #attenuate startle probe by X dB;
+int reduce_dB_imatraining = 15; #attenuate imagination instructions;
+
+int wait_blockstart = 5000; #waiting period at start of each block before first trial (in ms)
+
+int min_jit = 8000; #minimal duration of ISI in ms (offset CS until onset next CS)
+int max_jit = 10000; #maximal duration of ISI in ms (offset CS until onset next CS)
+
+int baseline_phase = 10;#5; #if set to X, a baseline measure of X min length will be conducted at the start of the experiment (0 = no baseline)
+
+int reinst_after_block = 0;#1; #reinstatement after which extinction block? (0 = never)
+int reinst_dur = 3000; #duration of cue presentation during reinstatement in ms
+
+bool cuerat_at_end = true; #present cue rating at the end of extinction?
+
+bool restrict_shuffling = false; #true; #restricts trial sequence so that there can be no startle probe during CS when a startle probe was present in the very previous ISI
+
+# when can startle probe during CS occur?
+# 1 = anytime during CS
+# 2 = only outside US presentation window
+# 3 = only during US presentation window
+int cs_startle_window = 2;
+
+### instructions ###
+
+#general
+string pause_instruct = "Nach einer kurzen Pause geht es weiter. Verfolgen Sie bitte auch weiterhin aufmerksam die Ereignisse auf dem Bildschirm.\n\nStarten Sie den nächsten Abschnitt sobald Sie bereit sind durch Drücken der mittleren Taste.";
+string goodbye_instruct = "Die Testung ist nun zu Ende.\n\nBitte warten Sie auf die Versuchsleiterin bzw. den Versuchsleiter.";
+string baseline_instruct = "Gleich beginnt eine " + string(baseline_phase) + "-minütige Ruhemessung.\n\nSobald Sie bereit sind, drücken Sie bitte die mittlere Taste, sitzen möglichste entspannt und schließen die Augen. Am Ende der Ruhephase hören Sie einen kurzen Ton.";
+#string startlehab_instruct = "Gleich werden Sie mehrmals ein sehr kurzes, lautes Geräusch hören. Zwischen den Darbietungen liegen einige Sekunden. Sie haben währenddessen keine Aufgabe.\n\nSobald Sie bereit sind, können Sie diesen Abschnitt durch Drücken der mittleren Taste starten.";
+string rating_instruct = "Bitte bewerten Sie die Gesichter auf den verschiedenen Skalen. Verwenden Sie dafür Ihre dominante Hand.\n\n(Weiter mit mittlerer Taste)";
+#string reinst_instruct = "Gleich geht es weiter.\n\nUm fortzufahren, drücken Sie bitte die mittlere Taste.";
+#string startlerating_instruct = "Wir werden Ihnen das Geräusch gleich noch einmal präsentieren. Anschließend werden wir Sie fragen, wie unangenehm Sie das Geräusch finden.\n\nSie können auf einer Skala von 0 (überhaupt nicht unangenehm) bis 10 (extrem unangenehm) antworten.\n\nBitte fahren Sie durch Drücken der mittleren Taste fort.";
+
+
+#imaginary
+string hab_instruct = "Ihnen werden nacheinander die verschiedenen Gesichter gezeigt. Bitte verfolgen Sie diese aufmerksam.\n\nSollten Sie noch Fragen haben, können Sie diese nun der Versuchsleiterin bzw. dem Versuchsleiter stellen.\n\nBitte starten Sie die Darbietung durch Drücken der mittleren Taste.";
+string main_instruct_ima = "Ihnen werden ab jetzt nacheinander verschiedene Gesichter und Symbole gezeigt. Bitte verfolgen Sie diese aufmerksam.\n\nDer folgende Untersuchungsteil besteht aus " + string(main_blocks+ext_blocks) + " Abschnitten. Zwischendurch werden Sie zu den Gesichtern und den Symbolen befragt.\n\n\n\nBitte starten Sie den nächsten Untersuchungsteil durch Drücken der mittleren Taste.";
+string welcome_withBL_instruct_ima = "Vielen Dank, dass Sie an unserer Untersuchung teilnehmen.\n\nDie Untersuchung beginnt damit, dass wir für " + string(baseline_phase) + " Minuten die Ruheaktivität Ihres Körpers messen, während Sie ruhig und mit geschlossenen Augen sitzen. Anschließend werden Ihnen in mehreren Abschnitten Gesichter und Symbole auf dem Bildschirm dargeboten.\n\nFalls Sie noch Fragen haben, geben Sie bitte jetzt der Versuchsleiterin bzw. dem Versuchsleiter Bescheid.\n\nFalls nicht, fahren Sie bitte durch Drücken der mittleren Taste fort.";
+string welcome_withoutBL_instruct_ima = "Vielen Dank, dass Sie an unserer Untersuchung teilnehmen.\n\nIhnen werden in mehreren Abschnitten Gesichter und Symbole auf dem Bildschirm dargeboten.\n\nFalls Sie noch Fragen haben, geben Sie bitte jetzt der Versuchsleiterin bzw. dem Versuchsleiter Bescheid.\n\nFalls nicht, fahren Sie bitte durch Drücken der mittleren Taste fort.";
+string cuerating_instruct = "Bitte geben Sie für die verschiedenen Symbole an, wie unangenehm die jeweils verknüpfte Vorstellung für Sie ist. Oder geben Sie an, dass Sie keine Vorstellung mit dem jeweiligen Symbol verknüpft haben. Verwenden Sie zum Drücken bitte Ihre dominante Hand.\n\n(Weiter mit mittlerer Taste)";
+string imatraining_instruct = "Im Laufe der Untersuchung werden Sie verschiedene Symbole auf dem Bildschirm sehen.\nBei zwei dieser Symbole sollen Sie sich bestimmte Situationen vorstellen und zwar so lebhaft wie möglich. Diese Situationen werden Ihnen gleich geschildert und Sie erfahren, zu welchem Symbol sie jeweils gehören.\n\nLassen Sie die Augen bitte offen und betrachten Sie das Symbol, während Sie sich die dazugehörige Situation vorstellen.\n\nWenn Sie die mittlere Taste drücken, hören Sie die erste Situation.";
+string imapause_instruct_neu = "Gleich stellen wir Ihnen das nächste Symbol vor und sagen Ihnen, was Sie sich dabei vorstellen sollen.\n\nLassen Sie die Augen bitte offen und betrachten Sie das Symbol, während Sie sich die dazugehörige Situation vorstellen.\n\nBitte fahren Sie durch Drücken der mittleren Taste fort.";
+string imapause_instruct_minus = "Gleich stellen wir Ihnen noch ein letztes Symbol vor.\nDieses sollen Sie einfach nur betrachten und an nichts Besonderes denken.\n\n Bitte fahren Sie durch Drücken der mittleren Taste fort.";
+string intro_instruct = "Gleich sehen Sie zur Erinnerung noch einmal, was Sie sich bei den verschiedenen Symbolen vorstellen sollen.\nAchten Sie bitte darauf, sich die Zuordnung gut einzuprägen.\nDie Zuordnungen werden Ihnen nacheinander angezeigt, zweimal für jedes Symbol.\n\nBitte fahren Sie durch Drücken der mittleren Taste fort.";
+string intro_cueplus_av_instruct = "Wenn Sie im Laufe der Untersuchung das folgende Symbol sehen, stellen sie sich bitte lebhaft vor, wie Sie den <b><u>Stromschlag</u></b> spüren.\n\nUm fortzufahren, drücken Sie bitte die mittlere Taste.";
+string intro_cueplus_neu_instruct = "Wenn Sie im Laufe der Untersuchung das folgende Symbol sehen, stellen Sie sich bitte lebhaft vor, wie Sie die <b><u>Vibration</u></b> spüren.\n\nUm fortzufahren, drücken Sie bitte die mittlere Taste.";
+string intro_cueminus_instruct = "Wenn Sie im Laufe der Untersuchung das folgende Symbol sehen, betrachten Sie es einfach, und denken an\n<b><u>nichts Besonderes</u></b>.\n\nUm fortzufahren, drücken Sie bitte die mittlere Taste.";
+
+
+#real
+string hab_instruct_real = "Ihnen werden nacheinander die verschiedenen Gesichter gezeigt. Bitte verfolgen Sie diese aufmerksam. In der kommenden Phase müssen Sie noch nicht mit elektrischen Reizen oder Vibrationsreizen rechnen\n\nSollten Sie noch Fragen haben, können Sie diese nun der Versuchsleiterin bzw. dem Versuchsleiter stellen.\n\nBitte starten Sie die Darbietung durch Drücken der mittleren Taste.";
+string main_instruct_real = "Ihnen werden ab jetzt nacheinander verschiedene Gesichter gezeigt. Bitte verfolgen Sie diese aufmerksam. Von Zeit zu Zeit können Sie auch einen elektrischen Reiz oder eine Vibration an Ihrem Arm bekommen.\n\nDer folgende Untersuchungsteil besteht aus " + string(main_blocks+ext_blocks) + " Abschnitten. Zwischendurch werden Sie zu den Gesichtern befragt.\n\n\n\nBitte starten Sie den nächsten Untersuchungsteil durch Drücken der mittleren Taste.";
+string welcome_withBL_instruct_real = "Vielen Dank, dass Sie an unserer Untersuchung teilnehmen.\n\nDie Untersuchung beginnt damit dass wir für " + string(baseline_phase) + " Minuten die Ruheaktivität Ihres Körpers messen, während Sie ruhig und mit geschlossenen Augen sitzen. Anschließend werden Ihnen in mehreren Abschnitten Gesichter auf dem Bildschirm dargeboten. Außerdem können Sie in dieser Phase mit Gesichtern von Zeit zu Zeit einen elektrischen Reiz oder eine Vibration an Ihrem Arm bekommen.\n\nFalls Sie noch Fragen haben, geben Sie bitte jetzt der Versuchsleiterin bzw. dem Versuchsleiter Bescheid.\n\nFalls nicht, fahren Sie bitte durch Drücken der mittleren Taste fort.";
+string welcome_withoutBL_instruct_real = "Vielen Dank, dass Sie an unserer Untersuchung teilnehmen.\n\nIhnen werden in mehreren Abschnitten wieder Gesichter auf dem Bildschirm dargeboten. Außerdem können Sie von Zeit zu Zeit einen elektrischen Reiz oder eine Vibration an Ihrem Arm bekommen.\n\nFalls Sie noch Fragen haben, geben Sie bitte jetzt der Versuchsleiterin bzw. dem Versuchsleiter Bescheid.\n\nFalls nicht, fahren Sie bitte durch Drücken der mittleren Taste fort.";
+string vibrohab_instruct = "Gleich werden Sie mehrmals einen kurzen Vibrationsreiz an Ihrem Arm bekommen. Zwischen den Reizen liegen einige Sekunden. Sie haben währenddessen keine Aufgabe.\n\nSobald Sie bereit sind, können Sie diesen Abschnitt durch Drücken der mittleren Taste starten.";
+string usrating_instruct = "Bitte geben Sie für den elektrischen Reiz und den Vibrationsreiz an, wie unangenehm Sie sie zuletzt fanden. Verwenden Sie zum Drücken bitte Ihre dominante Hand.\n\n(Weiter mit mittlerer Taste)";
+string almostdone_instruct = "Gleich haben Sie es geschafft. Wir haben noch eine letzte Frage an Sie.\n\nUm fortzufahren, drücken Sie bitte die mittlere Taste.";
+
+
+
+
+int txt_size = 48; # maximale font size if defined text window is large enough
+int vert_txt_stretch = 600; # maximal heigth of text window; font size is reduced if necessary to fit
+int hor_txt_stretch = 950; # maximal width of text window; font size is reduced if necessary to fit
+
+
+###############################################################################
+### port codes (need to be in the range 1-255); if set to 0 no code is sent ###
+###############################################################################
+
+
+# IMPORTANT: 126 and 127 must not be used as event markers (BioSemi start and stop triggers)
+
+int defPulseWidth = 3;
+int pc_csplus_av = 51; # CS+ for aversive imagination
+int pc_csplus_neu = 52; # CS+ for neutral imagination
+int pc_csminus = 53; # CS-
+int pc_cueplus_av = 61; # aversive Cue+
+int pc_cueplus_neu = 62; # neutral Cue+
+int pc_cueminus = 63; # Cue-
+int pc_startle_hab = 70; # startle during habituation
+int pc_startle_csp_av = 71; # startle during CS+ (aversive imagination)
+int pc_startle_csp_neu = 72; # startle during CS+ (neutral imagination)
+int pc_startle_csm = 73; # startle during CS-
+int pc_startle_isip_av = 81; # startle during ISI after CS+ (aversive imagination)
+int pc_startle_isip_neu = 82; # startle during ISI after CS+ (neutral imagination)
+int pc_startle_isim = 83; # startle during ISI after CS-
+int pc_reinst = 91; # reinstatement cue
+int pc_startbase = 101; # to mark start of baseline phase
+int pc_endbase = 102; # to mark end of baseline phase
+int pc_starthab = 103; # to mark start of habituation phase
+int pc_endhab = 104; # to mark end of habituation phase
+int pc_startmain = 105; # to mark start of main phase
+int pc_endmain = 106; # to mark end of main phase
+int pc_startext = 107; # to mark start of extinction phase
+int pc_endext = 108; # to mark end of extinction phase
+
+int bs_startcode = 99; # BioSemi starts recording; 0 = no code
+int bs_endcode = 100; # BioSemi stops recording; 0 = no code
+
+# if main_block_counter is set to X (non-zero), at the start of the first main block port code "X" is sent, at the end of the first block "X+1", start second block "X+2" and so on...
+# counting continues for extinction blocks
+# if set to zero, no codes are sent
+int main_block_counter = 201;
+
+
+
+
+###############################################################################
+
+# Parameter für Parameter- und display-Fenster definieren
+display_window.set_text_color (255, 0, 0);
+display_window.set_text_size (16);
+display_window.set_font_style (display_style_bold);
+display_window.set_font ("Arial");
+display_window.set_background_color (0, 0 , 0);
+display_window.erase();
+
+
+#int reduce_dB_toneA = 0; #attenuate tone A by X dB;
+#int reduce_dB_toneB = 0; #attenuate tone B by X dB;
+
+
+
+
+
+
+###################
+### subroutines ###
+###################
+
+# input und output ports festlegen
+output_port parallel = output_port_manager.get_port( 1 );
+output_port triggerport = output_port_manager.get_port( 2 );
+
+system_keyboard.set_max_length(1);	#wird für zeichenweise Ein-/Ausgabe benötigt
+
+# counter for additional learning trials
+array <int> add_learn_trials [1] = {0};
+
+
+
+##### BIOSEMI STEUERUNG #######
+sub Biosemi (int start_stopp, int sendcode) # 0 = Stopp, 1 = start
+begin
+   if (start_stopp == 1) then
+		wait_interval(100);   
+      parallel.send_code(126, 5); 
+		wait_interval(100); #warteninmsec(100);
+		logfile.add_event_entry("DR_Start"); #DR_START.present(); # Logfile-Eintrag zeitgleich mit DR-Start
+		parallel.send_code(sendcode, 5);
+		wait_interval(100); #warteninmsec(100);
+		#display_window.set_background_color (255, 0 , 0);
+      display_window.erase();
+   else
+		wait_interval(100);
+		parallel.send_code(sendcode, 5);
+		logfile.add_event_entry("DR_Stopp"); #DR_STOPP.present(); # zum Generieren von Logfile-Einträgen zeitgleich mit DR-Ende
+		wait_interval(1000); #warteninmsec(1000); # kleine Pause, damit am Ende des DRs nichts abgeschnitten wird
+		parallel.send_code(127, 5); # Biosemi stoppen
+		wait_interval(100);
+		#display_window.set_background_color (0, 0 , 0);
+      display_window.erase();
+	end;
+end; # of procedure
+
+
+
+##### give instructions to the participant #####
+
+sub
+	giveInstructions(string instructText, int presDur) # if presDur = 0 ==> ended by button press
+begin
+	instruct_text.set_caption(instructText);
+	instruct_text.redraw();
+	instruct_pic.present();
+	if presDur == 0 then
+		wait_interval(1000);
+		waitforbuttonpress.present();
+	else
+		wait_interval(presDur);
+	end;
+	default.present();
+end;
+
+
+
+##### update experimenter display #####
+
+sub
+	updateDisplay(string displayText, int red, int green, int blue)
+begin
+	display_window.erase();
+	display_window.set_text_color(red, green, blue);
+	display_window.draw_text (displayText);
+end;
+
+
+
+sub
+	present_baseline(int duration, int startmarker, int endmarker)
+begin
+	baseline_picture.present();
+	wait_interval(5000);
+	parallel.send_code(startmarker);
+	loop
+		int min = duration;
+		int sec = 0;
+	until
+		min == 0 && sec == 0
+	begin
+		#display_window.erase();
+		#display_window.draw_text ("Ruhephase\n\nnoch " + string(min) + " min " + string(sec) + " sek");
+		updateDisplay("Ruhephase\n\nnoch " + string(min) + " min " + string(sec) + " sek",0,255,0);
+		wait_interval(1000);
+		sec = sec - 1;
+		if sec == -1 then
+			min = min - 1;
+			sec = 59;
+		end;
+	end;
+	parallel.send_code(endmarker);
+	display_window.erase();
+	wait_interval(5000);
+end;
+
+
+sub
+	startle_hab(int nrTrials, int minInterval, int maxInterval)
+begin
+	fixpic.present();
+	wait_interval(3000);
+	loop
+		int i = 1;
+	until
+		i > nrTrials
+	begin
+		startlehab_trial.present();
+		display_window.erase();
+		display_window.draw_text ("startle habituation\n\nprobes " + string(i) + " / " + string(nrTrials));
+		wait_interval(random(minInterval,maxInterval));
+		i = i + 1;
+	end;
+	wait_interval(3000);
+end;
+
+sub
+	vibro_hab(int nrTrials, int minInterval, int maxInterval)
+begin
+	fixpic.present();
+	Biosemi(1,bs_startcode);
+	wait_interval(3000);
+	vibrohab_event.set_port_code(vibCode,vibCode);
+	vibrohab_event.set_code_width(usDur);
+	loop
+		int i = 1;
+	until
+		i > nrTrials
+	begin
+		vibrohab_trial.present();
+		display_window.erase();
+		display_window.draw_text ("vibration stimulus habituation\n\npresentations " + string(i) + " / " + string(nrTrials));
+		wait_interval(random(minInterval,maxInterval));
+		i = i + 1;
+	end;
+	triggerport.set_pulse_width(defPulseWidth);
+	wait_interval(3000);
+	Biosemi(0,bs_endcode);
+
+end;
+
+
+sub
+	create_hab_array(array <int,1>& input_array,int nr_p_av,int nr_p_neu,int nr_m)
+begin
+	int j = 1;
+	# CS+ (aversive) hab trial
+	loop
+		int i = 1
+	until
+		i > nr_p_av
+	begin
+		input_array[j] = 10;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS+ (neutral) hab trial
+	loop
+		int i = 1
+	until
+		i > nr_p_neu
+	begin
+		input_array[j] = 20;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS- hab trial
+	loop
+		int i = 1
+	until
+		i > nr_m
+	begin
+		input_array[j] = 30;
+		i = i+1;
+		j = j+1;
+	end;
+end;
+
+# subroutine to create trial array
+sub
+	create_trial_array(array <int,1>& input_array,int nr_p_av,int nr_p_neu,int nr_m,int nr_p1_av,int nr_p2_av,int nr_p1_neu,int nr_p2_neu,int nr_m1,int nr_m2)
+begin
+	int j = 1;
+	# CS+ (aversive) trial without startle = 10
+	loop
+		int i = 1
+	until
+		i > nr_p_av-nr_p1_av-nr_p2_av
+	begin
+		input_array[j] = 10;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS+ (aversive) trial with CS startle = 11
+	loop
+		int i = 1
+	until
+		i > nr_p1_av
+	begin
+		input_array[j] = 11;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS+(aversive) trial with ISI startle = 12	
+	loop
+		int i = 1
+	until
+		i > nr_p2_av
+	begin
+		input_array[j] = 12;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS+ (neutral) trial without startle = 20
+	loop
+		int i = 1
+	until
+		i > nr_p_neu-nr_p1_neu-nr_p2_neu
+	begin
+		input_array[j] = 20;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS+ (neutral) trial with CS startle = 21
+	loop
+		int i = 1
+	until
+		i > nr_p1_neu
+	begin
+		input_array[j] = 21;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS+ (neutral) trial with ISI startle = 22	
+	loop
+		int i = 1
+	until
+		i > nr_p2_neu
+	begin
+		input_array[j] = 22;
+		i = i+1;
+		j = j+1;
+	end;	
+	# CS- trial without startle = 30
+	loop
+		int i = 1
+	until
+		i > nr_m-nr_m1-nr_m2
+	begin
+		input_array[j] = 30;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS- trial with CS startle = 31
+	loop
+		int i = 1
+	until
+		i > nr_m1
+	begin
+		input_array[j] = 31;
+		i = i+1;
+		j = j+1;
+	end;
+	# CS- trial with ISI startle = 32
+	loop
+		int i = 1
+	until
+		i > nr_m2
+	begin
+		input_array[j] = 32;
+		i = i+1;
+		j = j+1;
+	end;
+end;
+
+## subroutine for filling arrays with relative frequency of ones
+sub
+	fill_cue_array(array <int,1>& input_array, double freq_ones)
+begin
+	loop
+		double i = 1.0
+	until
+		i > freq_ones * double(input_array.count())
+	begin
+		input_array[int(i)] = 1;
+		i = i + 1.0;
+	end;
+end;
+
+
+	
+## subroutine for shuffling trial array with restrictions (e.g., trial type A can not follow trial type B)
+sub
+	restricted_shuffle(array <int,1>& input_array, int shuffle_range)
+begin
+	int count = 0;
+	loop
+		int okay = 0;
+		input_array.shuffle();
+	until
+		okay == 1
+	begin
+		loop
+			int i = 2;
+			okay = 1;
+		until
+			i > input_array.count()
+		begin
+			if (input_array[i] == 11 || input_array[i] == 21 || input_array[i] == 31) && (input_array[i-1] == 12 || input_array[i-1] == 22 ||input_array[i-1] == 32) then
+				okay = 0;
+				if i > input_array.count()-shuffle_range then
+					input_array.shuffle(input_array.count()-2*shuffle_range-1,input_array.count());
+				elseif i < shuffle_range+1 then
+					input_array.shuffle(1,2*shuffle_range+1)
+				else
+					input_array.shuffle(i-2,i+2)
+				end;
+			end;
+			i = i+1;
+		end;
+		count = count + 1;
+		if count > 100 then
+			input_array.shuffle();
+			count = 0;
+		end;
+	end;
+end;
+
+
+# subroutine for introducing cues
+sub
+	intro_cue(string intro_text, array <int,2>& permut_mat, int cue_set, int cue_nr)
+begin
+	instruct_text.set_caption(intro_text);
+	instruct_text.redraw();
+	instruct_pic.set_part(2, geom_array[permut_mat[cue_set][cue_nr]]);
+	instruct_trial.present();
+	fixpic.present();
+	wait_interval(2000);
+end;
+
+
+
+
+
+
+########################
+# Standard-Subroutinen #
+########################
+system_keyboard.set_max_length(1);	#wird für zeichenweise Ein-/Ausgabe benötigt
+###### Anzeigen ######
+sub anzeigen (string ausgabetext, int farbe)
+begin
+   if (farbe == 1) then display_window.set_text_color (255, 0, 0);  # 0=grün, 1=rot
+     else display_window.set_text_color (0, 255, 0); end;
+   display_window.erase();
+   display_window.draw_text(ausgabetext);
+end; # of procedure
+
+### Unterbrechung mit Warnmeldung ###
+sub pause(string pausentext)
+begin
+   anzeigen(pausentext,1);
+   term.print("\n Weiter mit <RETURN> \n");
+  	loop string inputzeichen; bool exit1=false; until exit1
+  	begin
+		inputzeichen = system_keyboard.get_input();
+		if (system_keyboard.last_input_type() == int("\n")) then 
+   		exit1 = true;
+		end;
+  	end;
+  	anzeigen("Versuch läuft",0);	
+end; #sub
+
+####### Warten auf <return> ########
+
+sub
+warten_auf_return
+begin
+   loop string inputzeichen; int fertig = 0; until fertig == 1
+   begin
+      inputzeichen = system_keyboard.get_input();
+      if system_keyboard.last_input_type() == int("\n") then
+	      fertig = 1
+      end;
+   end;
+   display_window.erase();
+end; # warten_auf_return
+
+#
+### Parameter erfragen und verifizieren
+#
+string eingabe_parameter;
+
+sub
+enter_parameter (string display_text)
+begin
+eingabe_parameter = "";
+loop string inputzeichen; int ganzfertig = 0; until ganzfertig == 1
+  begin
+  	loop int fertig = 0; until fertig == 1
+  	begin
+		anzeigen (display_text
+			+ eingabe_parameter,1);
+		inputzeichen = system_keyboard.get_input();
+		#-----------------------------------------------------
+		#  Überprüfung auf 'return'
+		#-----------------------------------------------------
+		if system_keyboard.last_input_type() != int("\n") then 
+			eingabe_parameter = eingabe_parameter + inputzeichen;	
+		else	
+			fertig = 1
+		end;
+  	end;
+  anzeigen ("Parameter korrekt eingegeben? (+/-):" , 1);	
+  inputzeichen = system_keyboard.get_input();
+  if inputzeichen == "-" then
+	eingabe_parameter = "";
+  elseif inputzeichen == "+" then ganzfertig = 1;
+  end;
+end;
+display_window.erase();
+end; # sub
+
+
+
+### sub CS abfragen ###
+
+
+
+array<int> a_plus_av[0];
+array<int> a_plus_neu[0];
+array<int> a_minus[0];
+array<int> p_plus_av[0];
+array<int> p_plus_neu[0];
+array<int> p_minus[0];
+array<int> anx_plus_av[0];
+array<int> anx_plus_neu[0];
+array<int> anx_minus[0];
+array<int> ang_plus_av[0];
+array<int> ang_plus_neu[0];
+array<int> ang_minus[0];
+array<int> dis_plus_av[0];
+array<int> dis_plus_neu[0];
+array<int> dis_minus[0];
+
+sub
+	cs_abfragen
+begin
+	array <int> abfragen_nr [3] = {1,2,3};
+	int itemNr = 1;#bool pleasant_valid = false;
+	int antworttaste = 100;
+	abfragen_nr.shuffle();
+	loop
+		int j = 1
+	until
+		j > abfragen_nr.count()
+	begin
+		if itemNr == 1 then #if pleasant_valid == false then
+			ptrial_array[abfragen_nr[j]].present();
+			if	( bool (response_manager.response_count(2)))
+					then  antworttaste = 1;		# Taste 1 gedrückt
+				elseif ( bool (response_manager.response_count(3)))
+					then	antworttaste = 2;    	# Taste 2 gedrückt
+				elseif ( bool (response_manager.response_count(4)))
+					then  antworttaste = 3;    	# Taste 3 gedrückt
+				elseif ( bool (response_manager.response_count(5)))
+					then 	antworttaste = 4;    	# Taste 4 gedrückt	
+				elseif ( bool (response_manager.response_count(6)))
+					then 	antworttaste = 5;    	# Taste 5 gedrückt
+				else	
+					antworttaste = 100;
+			end; # ende Tastenabfrage
+			default.present();
+			
+			if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+				if abfragen_nr[j] == 1 then
+					p_plus_av.add(antworttaste);
+				elseif abfragen_nr[j] == 2 then
+					p_plus_neu.add(antworttaste);
+				elseif abfragen_nr[j] == 3 then
+					p_minus.add(antworttaste);
+				end;
+				display_window.erase();
+				display_window.set_text_color(0, 255, 0);
+				display_window.draw_text ("Pleasantness "+ string(j));
+				wait_interval(1000);
+				itemNr = itemNr + 1; #pleasant_valid = true;
+				antworttaste = 100;
+			else 		# falsche Taste gedrückt
+				display_window.erase();
+				display_window.set_text_color(255, 0, 0);
+				display_window.draw_text ("VP hat ungültige Taste gedrückt");
+			end;                                                             
+			display_window.erase();
+		
+		elseif itemNr == 2 then #elseif pleasant_valid == true then #wenn Pleasantness-Eingabe gültig, dann kommt Arousal
+			atrial_array[abfragen_nr[j]].present();
+			if	( bool (response_manager.response_count(2)))
+					then  antworttaste = 1;		# Taste 1 gedrückt
+				elseif ( bool (response_manager.response_count(3)))
+					then	antworttaste = 2;    	# Taste 2 gedrückt
+				elseif ( bool (response_manager.response_count(4)))
+					then  antworttaste = 3;    	# Taste 3 gedrückt
+				elseif ( bool (response_manager.response_count(5)))
+					then 	antworttaste = 4;    	# Taste 4 gedrückt
+				elseif ( bool (response_manager.response_count(6)))
+					then 	antworttaste = 5;    	# Taste 5 gedrückt
+				else	
+					antworttaste = 100; 
+			end; # ende Tastenabfrage
+			default.present();
+		
+			if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+				if abfragen_nr[j] == 1 then
+					a_plus_av.add(antworttaste);
+				elseif abfragen_nr[j] == 2 then
+					a_plus_neu.add(antworttaste);	
+				elseif abfragen_nr[j] == 3 then
+					a_minus.add(antworttaste);
+				end;
+				display_window.erase();
+				display_window.set_text_color(0, 255, 0);
+				display_window.draw_text ("Arousal "+ string(j));
+				wait_interval(1000);
+				itemNr = itemNr + 1; #pleasant_valid = false;
+				antworttaste = 100;
+				#j = j + 1;
+			else 		# falsche Taste gedrückt
+				display_window.erase();
+				display_window.set_text_color(255, 0, 0);
+				display_window.draw_text ("VP hat ungültige Taste gedrückt");
+			end;                                                             
+			display_window.erase();
+		
+		elseif itemNr == 3 then #elseif pleasant_valid == true then #wenn Pleasantness-Eingabe gültig, dann kommt Arousal
+			anxtrial_array[abfragen_nr[j]].present();
+			if	( bool (response_manager.response_count(2)))
+					then  antworttaste = 1;		# Taste 1 gedrückt
+				elseif ( bool (response_manager.response_count(3)))
+					then	antworttaste = 2;    	# Taste 2 gedrückt
+				elseif ( bool (response_manager.response_count(4)))
+					then  antworttaste = 3;    	# Taste 3 gedrückt
+				elseif ( bool (response_manager.response_count(5)))
+					then 	antworttaste = 4;    	# Taste 4 gedrückt
+				elseif ( bool (response_manager.response_count(6)))
+					then 	antworttaste = 5;    	# Taste 5 gedrückt
+				else	
+					antworttaste = 100; 
+			end; # ende Tastenabfrage
+			default.present();
+		
+			if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+				if abfragen_nr[j] == 1 then
+					anx_plus_av.add(antworttaste);
+				elseif abfragen_nr[j] == 2 then
+					anx_plus_neu.add(antworttaste);	
+				elseif abfragen_nr[j] == 3 then
+					anx_minus.add(antworttaste);
+				end;
+				display_window.erase();
+				display_window.set_text_color(0, 255, 0);
+				display_window.draw_text ("Anxiety "+ string(j));
+				wait_interval(1000);
+				itemNr = itemNr + 1; #pleasant_valid = false;
+				antworttaste = 100;
+				#j = j + 1;
+			else 		# falsche Taste gedrückt
+				display_window.erase();
+				display_window.set_text_color(255, 0, 0);
+				display_window.draw_text ("VP hat ungültige Taste gedrückt");
+			end;                                                             
+			display_window.erase();
+		
+		elseif itemNr == 4 then #elseif pleasant_valid == true then #wenn Pleasantness-Eingabe gültig, dann kommt Arousal
+			angtrial_array[abfragen_nr[j]].present();
+			if	( bool (response_manager.response_count(2)))
+					then  antworttaste = 1;		# Taste 1 gedrückt
+				elseif ( bool (response_manager.response_count(3)))
+					then	antworttaste = 2;    	# Taste 2 gedrückt
+				elseif ( bool (response_manager.response_count(4)))
+					then  antworttaste = 3;    	# Taste 3 gedrückt
+				elseif ( bool (response_manager.response_count(5)))
+					then 	antworttaste = 4;    	# Taste 4 gedrückt
+				elseif ( bool (response_manager.response_count(6)))
+					then 	antworttaste = 5;    	# Taste 5 gedrückt
+				else	
+					antworttaste = 100; 
+			end; # ende Tastenabfrage
+			default.present();
+		
+			if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+				if abfragen_nr[j] == 1 then
+					ang_plus_av.add(antworttaste);
+				elseif abfragen_nr[j] == 2 then
+					ang_plus_neu.add(antworttaste);	
+				elseif abfragen_nr[j] == 3 then
+					ang_minus.add(antworttaste);
+				end;
+				display_window.erase();
+				display_window.set_text_color(0, 255, 0);
+				display_window.draw_text ("Anger "+ string(j));
+				wait_interval(1000);
+				itemNr = itemNr + 1; #pleasant_valid = false;
+				antworttaste = 100;
+				#j = j + 1;
+			else 		# falsche Taste gedrückt
+				display_window.erase();
+				display_window.set_text_color(255, 0, 0);
+				display_window.draw_text ("VP hat ungültige Taste gedrückt");
+			end;                                                             
+			display_window.erase();
+		
+		elseif itemNr == 5 then #elseif pleasant_valid == true then #wenn Pleasantness-Eingabe gültig, dann kommt Arousal
+			distrial_array[abfragen_nr[j]].present();
+			if	( bool (response_manager.response_count(2)))
+					then  antworttaste = 1;		# Taste 1 gedrückt
+				elseif ( bool (response_manager.response_count(3)))
+					then	antworttaste = 2;    	# Taste 2 gedrückt
+				elseif ( bool (response_manager.response_count(4)))
+					then  antworttaste = 3;    	# Taste 3 gedrückt
+				elseif ( bool (response_manager.response_count(5)))
+					then 	antworttaste = 4;    	# Taste 4 gedrückt
+				elseif ( bool (response_manager.response_count(6)))
+					then 	antworttaste = 5;    	# Taste 5 gedrückt
+				else	
+					antworttaste = 100; 
+			end; # ende Tastenabfrage
+			default.present();
+		
+			if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+				if abfragen_nr[j] == 1 then
+					dis_plus_av.add(antworttaste);
+				elseif abfragen_nr[j] == 2 then
+					dis_plus_neu.add(antworttaste);	
+				elseif abfragen_nr[j] == 3 then
+					dis_minus.add(antworttaste);
+				end;
+				display_window.erase();
+				display_window.set_text_color(0, 255, 0);
+				display_window.draw_text ("Disgust "+ string(j));
+				wait_interval(1000);
+				itemNr = 1; #pleasant_valid = false;
+				antworttaste = 100;
+				j = j + 1;
+			else 		# falsche Taste gedrückt
+				display_window.erase();
+				display_window.set_text_color(255, 0, 0);
+				display_window.draw_text ("VP hat ungültige Taste gedrückt");
+			end;                                                             
+			display_window.erase();
+		end;
+	end;
+end;
+
+
+### Sub Cue-Ratings ###
+
+array<int> cuerat_plus_av[0];
+array<int> cuerat_plus_neu[0];
+array<int> cuerat_minus[0];
+
+sub
+	cue_abfragen
+begin
+	array <int> abfragen_nr [3] = {1,2,3};
+	int antworttaste = 100;
+	abfragen_nr.shuffle();
+	loop
+		int j = 1
+	until
+		j > abfragen_nr.count()
+	begin
+		cuerattrial_array[abfragen_nr[j]].present();
+		if	( bool (response_manager.response_count(1)))
+				then  antworttaste = 0;		# Taste 0 gedrückt
+			elseif ( bool (response_manager.response_count(2)))
+				then	antworttaste = 1;    # Taste 1 gedrückt
+			elseif ( bool (response_manager.response_count(3)))
+				then  antworttaste = 2;    # Taste 2 gedrückt
+			elseif ( bool (response_manager.response_count(4)))
+				then 	antworttaste = 3;  # Taste 3 gedrückt
+			elseif ( bool (response_manager.response_count(5)))
+				then 	antworttaste = 4;  # Taste 4 gedrückt
+			elseif ( bool (response_manager.response_count(6)))
+				then 	antworttaste = 5;  # Taste 5 gedrückt
+			elseif ( bool (response_manager.response_count(7)))
+				then 	antworttaste = 6;  # Taste 6 gedrückt
+			elseif ( bool (response_manager.response_count(8)))
+				then 	antworttaste = 7;  # Taste 7 gedrückt
+			elseif ( bool (response_manager.response_count(9)))
+				then 	antworttaste = 8;  # Taste 8 gedrückt
+			elseif ( bool (response_manager.response_count(10)))
+				then 	antworttaste = 9;  # Taste 9 gedrückt
+			elseif ( bool (response_manager.response_count(11)))
+				then 	antworttaste = 10;  # Taste 10 gedrückt	
+			elseif ( bool (response_manager.response_count(15)))
+				then antworttaste = 99;
+			else	
+				antworttaste = 100;
+		end; # ende Tastenabfrage
+		default.present();
+		
+		if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+			if abfragen_nr[j] == 1 then
+				cuerat_plus_av.add(antworttaste);
+			elseif abfragen_nr[j] == 2 then
+				cuerat_plus_neu.add(antworttaste);
+			elseif abfragen_nr[j] == 3 then
+				cuerat_minus.add(antworttaste);
+			end;
+			display_window.erase();
+			display_window.set_text_color(0, 255, 0);
+			display_window.draw_text ("Cue rating "+ string(j));
+			wait_interval(1000);
+			antworttaste = 100;
+			j = j + 1;
+		else 		# falsche Taste gedrückt
+			display_window.erase();
+			display_window.set_text_color(255, 0, 0);
+			display_window.draw_text ("VP hat ungültige Taste gedrückt");
+		end;                                                             
+		display_window.erase();
+		
+	end;
+end;
+
+
+
+### Sub US-Ratings ###
+
+array<int> usrat_av[0];
+array<int> usrat_neu[0];
+
+sub
+	us_abfragen
+begin
+	array <int> abfragen_nr [2] = {1,2};
+	int antworttaste = 100;
+	#abfragen_nr.shuffle();
+	loop
+		int j = 1
+	until
+		j > abfragen_nr.count()
+	begin
+		usrattrial_array[abfragen_nr[j]].present();
+		if	( bool (response_manager.response_count(1)))
+				then  antworttaste = 0;		# Taste 0 gedrückt
+			elseif ( bool (response_manager.response_count(2)))
+				then	antworttaste = 1;    # Taste 1 gedrückt
+			elseif ( bool (response_manager.response_count(3)))
+				then  antworttaste = 2;    # Taste 2 gedrückt
+			elseif ( bool (response_manager.response_count(4)))
+				then 	antworttaste = 3;  # Taste 3 gedrückt
+			elseif ( bool (response_manager.response_count(5)))
+				then 	antworttaste = 4;  # Taste 4 gedrückt
+			elseif ( bool (response_manager.response_count(6)))
+				then 	antworttaste = 5;  # Taste 5 gedrückt
+			elseif ( bool (response_manager.response_count(7)))
+				then 	antworttaste = 6;  # Taste 6 gedrückt
+			elseif ( bool (response_manager.response_count(8)))
+				then 	antworttaste = 7;  # Taste 7 gedrückt
+			elseif ( bool (response_manager.response_count(9)))
+				then 	antworttaste = 8;  # Taste 8 gedrückt
+			elseif ( bool (response_manager.response_count(10)))
+				then 	antworttaste = 9;  # Taste 9 gedrückt
+			elseif ( bool (response_manager.response_count(11)))
+				then 	antworttaste = 10;  # Taste 10 gedrückt	
+			else	
+				antworttaste = 100;
+		end; # ende Tastenabfrage
+		default.present();
+		
+		if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+			if abfragen_nr[j] == 1 then
+				usrat_av.add(antworttaste);
+			elseif abfragen_nr[j] == 2 then
+				usrat_neu.add(antworttaste);
+			end;
+			display_window.erase();
+			display_window.set_text_color(0, 255, 0);
+			display_window.draw_text ("US rating "+ string(j));
+			wait_interval(1000);
+			antworttaste = 100;
+			j = j + 1;
+		else 		# falsche Taste gedrückt
+			display_window.erase();
+			display_window.set_text_color(255, 0, 0);
+			display_window.draw_text ("VP hat ungültige Taste gedrückt");
+		end;                                                             
+		display_window.erase();
+		
+	end;
+end;
+
+
+
+### Sub CS-US-Kontingenz abfragen ###
+array<int> cont_rat_av[3];
+array<int> cont_rat_neu[3];
+
+sub
+	kontingenz
+begin
+	array <int> abfragen_nr [3] = {1,2,3};
+	int itemNr = 1;
+	int antworttaste = 100;
+	abfragen_nr.shuffle();
+	loop
+		int j = 1
+	until
+		j > abfragen_nr.count()
+	begin
+		if itemNr == 1 then
+			ctrial_av_array[abfragen_nr[j]].present();
+			if	( bool (response_manager.response_count(1)))
+					then  antworttaste = 0;			# Taste 1 gedrückt
+				elseif ( bool (response_manager.response_count(2)))
+					then	antworttaste = 1;    # Taste 2 gedrückt
+				elseif ( bool (response_manager.response_count(3)))
+					then  antworttaste = 2;    	# Taste 3 gedrückt
+				elseif ( bool (response_manager.response_count(4)))
+					then 	antworttaste = 3;  # Taste 4 gedrückt
+				else	
+					antworttaste = 100; 
+			end; # ende Tastenabfrage
+			default.present();
+			
+			if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+				cont_rat_av[abfragen_nr[j]] = antworttaste;
+				display_window.erase();
+				display_window.set_text_color(0, 255, 0);
+				display_window.draw_text ("Kontingenz aversiv "+ string(j));
+				wait_interval(1000);
+				antworttaste = 100;
+				itemNr = itemNr + 1;
+				#j = j + 1;
+				else 		# falsche Taste gedrückt
+				display_window.erase();
+				display_window.set_text_color(255, 0, 0);
+				display_window.draw_text ("VP hat ungültige Taste gedrückt");
+			end;                                                             
+			display_window.erase();
+		elseif itemNr == 2 then
+			ctrial_neu_array[abfragen_nr[j]].present();
+			if	( bool (response_manager.response_count(1)))
+					then  antworttaste = 0;			# Taste 1 gedrückt
+				elseif ( bool (response_manager.response_count(2)))
+					then	antworttaste = 1;    # Taste 2 gedrückt
+				elseif ( bool (response_manager.response_count(3)))
+					then  antworttaste = 2;    	# Taste 3 gedrückt
+				elseif ( bool (response_manager.response_count(4)))
+					then 	antworttaste = 3;  # Taste 4 gedrückt
+				else	
+					antworttaste = 100; 
+			end; # ende Tastenabfrage
+			default.present();
+			
+			if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+				cont_rat_neu[abfragen_nr[j]] = antworttaste;
+				display_window.erase();
+				display_window.set_text_color(0, 255, 0);
+				display_window.draw_text ("Kontingenz neutral "+ string(j));
+				wait_interval(1000);
+				antworttaste = 100;
+				itemNr = 1;
+				j = j + 1;
+				else 		# falsche Taste gedrückt
+				display_window.erase();
+				display_window.set_text_color(255, 0, 0);
+				display_window.draw_text ("VP hat ungültige Taste gedrückt");
+			end;                                                             
+			display_window.erase();
+		end;	
+	end;
+end; #sub
+
+
+
+### startle valence rating ###
+
+array<int> startle_rat[0];
+
+sub
+	startle_abfragen
+begin
+	loop
+		int antworttaste = 100;
+	until
+		antworttaste != 100
+	begin
+		startlerat_trial.present();
+		if	( bool (response_manager.response_count(1)))
+				then  antworttaste = 0;		# Taste 0 gedrückt
+			elseif ( bool (response_manager.response_count(2)))
+				then	antworttaste = 1;    # Taste 1 gedrückt
+			elseif ( bool (response_manager.response_count(3)))
+				then  antworttaste = 2;    # Taste 2 gedrückt
+			elseif ( bool (response_manager.response_count(4)))
+				then 	antworttaste = 3;  # Taste 3 gedrückt
+			elseif ( bool (response_manager.response_count(5)))
+				then 	antworttaste = 4;  # Taste 4 gedrückt
+			elseif ( bool (response_manager.response_count(6)))
+				then 	antworttaste = 5;  # Taste 5 gedrückt
+			elseif ( bool (response_manager.response_count(7)))
+				then 	antworttaste = 6;  # Taste 6 gedrückt
+			elseif ( bool (response_manager.response_count(8)))
+				then 	antworttaste = 7;  # Taste 7 gedrückt
+			elseif ( bool (response_manager.response_count(9)))
+				then 	antworttaste = 8;  # Taste 8 gedrückt
+			elseif ( bool (response_manager.response_count(10)))
+				then 	antworttaste = 9;  # Taste 9 gedrückt
+			elseif ( bool (response_manager.response_count(11)))
+				then 	antworttaste = 10;  # Taste 10 gedrückt				
+			else	
+				antworttaste = 100; 
+		end; # ende Tastenabfrage
+		default.present();
+		
+		if antworttaste != 100 then # wenn keine falsche Taste gedrückt wurde
+			startle_rat.add(antworttaste);
+			display_window.erase();
+			display_window.set_text_color(0, 255, 0);
+			display_window.draw_text ("Startle Rating");
+			wait_interval(1000);
+			#antworttaste = 100;
+			else 		# falsche Taste gedrückt
+			display_window.erase();
+			display_window.set_text_color(255, 0, 0);
+			display_window.draw_text ("VP hat ungültige Taste gedrückt");
+		end;                                                             
+		display_window.erase();
+	end;
+end; #sub
+
+
+#subroutine to write single subject file with ratings
+sub
+	save_subject_ratings(array<int,1>& input_array, string filename_suffix)
+begin
+	string savename = "export_ratings\\" + logfile.subject() + "_" + filename_suffix + ".txt";
+	output_file ratingfile = new output_file;
+	ratingfile.open(savename);
+	loop
+		int i = 1
+	until
+		i > input_array.count()
+	begin	
+		ratingfile.print(string(input_array[i]) + " ");
+		i = i + 1;
+	end;
+	ratingfile.close();
+end; #sub
+
+
+#subroutine write whole-sample data set for ratings
+sub
+	add_to_dataset(array<int,1>& groupArray)
+begin
+	if groupArray[1] == 0 then # if imaginery group
+		loop int i = 1 until i > cuerat_plus_av.count() begin
+			usrat_av.add(-99);
+			usrat_neu.add(-99);
+			i = i+1;
+		end;
+		cont_rat_av = {-99,-99,-99};
+		cont_rat_neu = {-99,-99,-99};
+	elseif groupArray[1] == 1 then # if real group
+		loop int i = 1 until i > usrat_av.count() begin
+			cuerat_plus_av.add(-99);
+			cuerat_plus_neu.add(-99);
+			cuerat_minus.add(-99);
+			i = i+1;
+		end;
+		add_learn_trials = {-99};	
+	end;
+	
+	array<int> big_array[0];
+	big_array.append(groupArray);
+	big_array.append(p_plus_av);
+	big_array.append(p_plus_neu);
+	big_array.append(p_minus);
+	big_array.append(a_plus_av);
+	big_array.append(a_plus_neu);
+	big_array.append(a_minus);
+	big_array.append(anx_plus_av);
+	big_array.append(anx_plus_neu);
+	big_array.append(anx_minus);
+	big_array.append(ang_plus_av);
+	big_array.append(ang_plus_neu);
+	big_array.append(ang_minus);
+	big_array.append(dis_plus_av);
+	big_array.append(dis_plus_neu);
+	big_array.append(dis_minus);
+	big_array.append(cuerat_plus_av);
+	big_array.append(cuerat_plus_neu);
+	big_array.append(cuerat_minus);
+	big_array.append(add_learn_trials);
+	big_array.append(usrat_av);
+	big_array.append(usrat_neu);
+	big_array.append(cont_rat_av);
+	big_array.append(cont_rat_neu);
+	#big_array.append(startle_rat);
+	
+	output_file ratingfile = new output_file;
+	ratingfile.open_append("export_ratings\\imakon03_allratings.txt");
+	ratingfile.print(logfile.subject() + " ");
+	loop
+		int i = 1
+	until
+		i > big_array.count()
+	begin
+		ratingfile.print(string(big_array[i]) + " ");
+		i = i + 1;
+	end;
+	ratingfile.print("\n");
+	ratingfile.close();
+	
+	save_subject_ratings(big_array, "ratings");
+end; #sub
+
+
+
+
+
+##### shock work up #####
+array <int> shockCodeMat[2][2];
+	shockCodeMat[1][1] = 1;#shockCode;
+	shockCodeMat[1][2] =	0;
+	shockCodeMat[2][1] =	0;
+	shockCodeMat[2][2] =	1;#shockCode;
+
+sub
+	shockWorkup(string side)
+begin
+	default.present();
+	int matRow = 1;	
+	
+	loop bool complete = false until complete == true begin
+		
+		updateDisplay("Kalibrierung elektrischer Reiz\n\n(1) Reiz geben\n\n(0) Kalibrierung (inkl. Valenzrating) fertig", 255, 0, 0);
+		workup_button_trial.present();
+		
+		if response_manager.last_response() == 13 then
+			
+			if side == "left_only" then
+				loop int j = 1 until j > nrPulses begin
+					workup_shock_trial.get_stimulus_event(j).set_port_code(shockCode);
+					j = j + 1;
+				end;
+				workup_shock_trial.present();
+				/*
+			elseif side == "right_only" then	
+				loop int j = 1 until j > nrPulses begin
+					workup_shock_trial.get_stimulus_event(j).set_port_code(pCodeShockR);
+					j = j + 1;
+				end;
+				workup_shock_trial.present();
+			elseif side == "left_first" || side == "right_first" || side == "switch" then
+				
+				if side == "left_first" then 
+					matRow = 1;
+				elseif side == "right_first" then
+					matRow = 2;
+				end;
+				
+				loop int j = 1 until j > nrPulses begin
+					workup_shock_trial.get_stimulus_event(j).set_port_code(shockCodeMat[matRow][1]);
+					j = j + 1;
+				end;
+				workup_shock_trial.present();
+
+				wait_interval(500);
+				
+				loop int j = 1 until j > nrPulses begin
+					workup_shock_trial.get_stimulus_event(j).set_port_code(shockCodeMat[matRow][2]);
+					j = j + 1;
+				end;
+				workup_shock_trial.present();
+
+				matRow = 3 - matRow;
+				*/
+			end;
+			
+				
+		elseif response_manager.last_response() == 14 then
+			updateDisplay("Sicher, das fortgefahren werden soll?\n\n(1) ja\n\n(0) nein", 255, 0, 0);
+			workup_button_trial.present();
+			if response_manager.last_response() == 13 then
+				complete = true;
+			end;
+			
+		end;
+	end;
+end;

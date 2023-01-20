@@ -1,0 +1,817 @@
+### IMAKON 0.3 ###
+### pcl-file ###
+
+
+# references to subroutines and settings
+include "imakon_0_3_subroutines_and_settings.pcl"; # weitere pcls
+#include "imakon_0_3_settings.pcl"; # weitere pcls
+
+# hab array
+array<int> hab_type[hab_cs_plus_av + hab_cs_plus_neu + hab_cs_minus];
+create_hab_array(hab_type,hab_cs_plus_av,hab_cs_plus_neu,hab_cs_minus);
+
+# CS array
+array<int> trial_type[main_cs_plus_av + main_cs_plus_neu + main_cs_minus]; #empty trial array
+create_trial_array(trial_type,main_cs_plus_av,main_cs_plus_neu,main_cs_minus,nr_startle_cs_plus_av,nr_startle_isi_plus_av,nr_startle_cs_plus_neu,nr_startle_isi_plus_neu,nr_startle_cs_minus,nr_startle_isi_minus); #fill trial array 
+array<int> trial_type_ext[ext_cs_plus_av + ext_cs_plus_neu + ext_cs_minus]; #empty trial array
+create_trial_array(trial_type_ext,ext_cs_plus_av,ext_cs_plus_neu,ext_cs_minus,ext_nr_startle_cs_plus_av,ext_nr_startle_isi_plus_av,ext_nr_startle_cs_plus_neu,ext_nr_startle_isi_plus_neu,ext_nr_startle_cs_minus,ext_nr_startle_isi_minus); #fill trial array 
+
+
+# US arrays
+array<int> cue_plus_av_array[main_cs_plus_av];
+fill_cue_array(cue_plus_av_array,rate_cue_plus_av);
+array<int> cue_plus_neu_array[main_cs_plus_neu];
+fill_cue_array(cue_plus_neu_array,rate_cue_plus_neu);
+array<int> cue_minus_array[main_cs_minus];
+fill_cue_array(cue_minus_array,rate_cue_minus);
+
+# get CS and cue sets and write them to logfile
+logfile.add_event_entry("group");
+logfile.add_event_entry("ima");
+int cs_set = parameter_manager.get_int("cs_set");
+logfile.add_event_entry("CS_set");
+logfile.add_event_entry(string(cs_set));
+int cue_set = parameter_manager.get_int("cue_set");
+logfile.add_event_entry("CUE_set");
+logfile.add_event_entry(string(cue_set));
+array <int> group_perm[3];
+	group_perm[1] = 0;
+	group_perm[2] = cs_set;
+	group_perm[3] = cue_set;
+	
+
+
+array <int> permut [3][3] = {
+										{1,2,3},
+										{2,3,1},
+										{3,1,2}
+};
+
+array <string> symstrings [3] = {"Quadrat","Kreis","Dreieck"};
+
+####### Arrays fertig #######
+
+### Permutations ###
+cs_plus_av_event.set_stimulus (face_array [permut [cs_set] [1]]);
+cs_plus_neu_event.set_stimulus (face_array [permut [cs_set] [2]]);
+cs_minus_event.set_stimulus (face_array [permut [cs_set] [3]]);
+
+p_plus_av_event.set_stimulus (ppic_array [permut [cs_set] [1]]);
+p_plus_neu_event.set_stimulus (ppic_array [permut [cs_set] [2]]);
+p_minus_event.set_stimulus (ppic_array [permut [cs_set] [3]]);
+
+a_plus_av_event.set_stimulus (apic_array [permut [cs_set] [1]]);
+a_plus_neu_event.set_stimulus (apic_array [permut [cs_set] [2]]);
+a_minus_event.set_stimulus (apic_array [permut [cs_set] [3]]);
+
+anx_plus_av_event.set_stimulus (anxpic_array [permut [cs_set] [1]]);
+anx_plus_neu_event.set_stimulus (anxpic_array [permut [cs_set] [2]]);
+anx_minus_event.set_stimulus (anxpic_array [permut [cs_set] [3]]);
+
+ang_plus_av_event.set_stimulus (angpic_array [permut [cs_set] [1]]);
+ang_plus_neu_event.set_stimulus (angpic_array [permut [cs_set] [2]]);
+ang_minus_event.set_stimulus (angpic_array [permut [cs_set] [3]]);
+
+dis_plus_av_event.set_stimulus (dispic_array [permut [cs_set] [1]]);
+dis_plus_neu_event.set_stimulus (dispic_array [permut [cs_set] [2]]);
+dis_minus_event.set_stimulus (dispic_array [permut [cs_set] [3]]);
+
+#c_plus_av_event.set_stimulus (cpic_array [permut [cs_set] [1]]);
+#c_plus_neu_event.set_stimulus (cpic_array [permut [cs_set] [2]]);
+#c_minus_event.set_stimulus (cpic_array [permut [cs_set] [3]]);
+
+imacue_av_event.set_stimulus (geompic_array [permut [cue_set] [1]]);
+imacue_neu_event.set_stimulus (geompic_array [permut [cue_set] [2]]);
+imacue_minus_event.set_stimulus (geompic_array [permut [cue_set] [3]]);
+
+imasound_av_event.set_stimulus (ima_av_sound_array [permut [cue_set] [1]]);
+imasound_neu_event.set_stimulus (ima_neu_sound_array [permut [cue_set] [2]]);
+imasound_minus_event.set_stimulus (ima_minus_sound_array [permut [cue_set] [3]]);
+
+cuerat_plus_av_event.set_stimulus (cueratpic_array [permut [cue_set] [1]]);
+cuerat_plus_neu_event.set_stimulus (cueratpic_array [permut [cue_set] [2]]);
+cuerat_minus_event.set_stimulus (cueratpic_array [permut [cue_set] [3]]);
+
+cue_plus_av.set_part (1, bmp_array [permut [cs_set] [1]]);
+cue_plus_neu.set_part (1, bmp_array [permut [cs_set] [2]]);
+cue_minus.set_part (1, bmp_array [permut [cs_set] [3]]);
+cue_plus_av.set_part (2, geom_array [permut [cue_set] [1]]);
+cue_plus_neu.set_part (2, geom_array [permut [cue_set] [2]]);
+cue_minus.set_part (2, geom_array [permut [cue_set] [3]]);
+
+
+#reinst_pic.set_part (1, geom_array [permut [cue_set] [1]]);
+
+
+### import trial settings ###
+cs_plus_av_event.set_duration(cue_onset);
+cs_plus_av_event.set_port_code(pc_csplus_av);
+cs_plus_neu_event.set_duration(cue_onset);
+cs_plus_neu_event.set_port_code(pc_csplus_neu);
+cs_minus_event.set_duration(cue_onset);
+cs_minus_event.set_port_code(pc_csminus);
+cue_plus_av_event.set_time(cue_onset);
+cue_plus_av_event.set_duration(cs_dur-cue_onset);
+cue_plus_neu_event.set_time(cue_onset);
+cue_plus_neu_event.set_duration(cs_dur-cue_onset);
+cue_minus_event.set_time(cue_onset);
+cue_minus_event.set_duration(cs_dur-cue_onset);
+isi_plus_av_event.set_time(cs_dur);
+isi_plus_neu_event.set_time(cs_dur);
+isi_minus_event.set_time(cs_dur);
+reinst_event.set_duration(reinst_dur);
+reinst_event.set_port_code(pc_reinst);
+after_reinst_event.set_deltat(reinst_dur);
+startlehab_event.set_port_code(pc_startle_hab);
+
+bmp_a.set_load_size(0.0,0.0,rescale_face); bmp_a.load();
+bmp_b.set_load_size(0.0,0.0,rescale_face); bmp_b.load();
+bmp_c.set_load_size(0.0,0.0,rescale_face); bmp_c.load();
+
+geom_square.set_radius(double(size_geoms)/sqrt(2.0)); geom_square.set_line_color(color_square); geom_square.set_fill_color(color_square); geom_square.redraw();
+#geom_ellipse.set_dimensions(double(size_geoms), double(size_geoms)/1.5); geom_ellipse.set_color(color_ellipse); geom_ellipse.redraw();
+geom_circle.set_radius(double(size_geoms)/2.0); geom_circle.set_line_color(color_circle); geom_circle.set_fill_color(color_circle); geom_circle.redraw();
+#geom_hexagon.set_radius(double(size_geoms)/1.9); geom_hexagon.set_line_color(color_hexagon); geom_hexagon.set_fill_color(color_hexagon); geom_hexagon.redraw();
+geom_triangle.set_radius(double(size_geoms)*0.866*2.0/3.0); geom_triangle.set_line_color(color_triangle); geom_triangle.set_fill_color(color_triangle); geom_triangle.redraw();
+instruct_text.set_max_text_height(vert_txt_stretch); instruct_text.set_max_text_width(hor_txt_stretch); instruct_text.set_font_size(txt_size); instruct_text.redraw();
+pleasewait_text.set_max_text_height(vert_txt_stretch); pleasewait_text.set_max_text_width(hor_txt_stretch); pleasewait_text.set_font_size(txt_size); pleasewait_text.redraw();
+pleasant_text.set_max_text_height(vert_txt_stretch); pleasant_text.set_max_text_width(hor_txt_stretch); pleasant_text.redraw();
+arousal_text.set_max_text_height(vert_txt_stretch); arousal_text.set_max_text_width(hor_txt_stretch); arousal_text.redraw();
+anxiety_text.set_max_text_height(vert_txt_stretch); anxiety_text.set_max_text_width(hor_txt_stretch); anxiety_text.redraw();
+anger_text.set_max_text_height(vert_txt_stretch); anger_text.set_max_text_width(hor_txt_stretch); anger_text.redraw();
+disgust_text.set_max_text_height(vert_txt_stretch); disgust_text.set_max_text_width(hor_txt_stretch); disgust_text.redraw();
+#contingency_text.set_max_text_height(vert_txt_stretch); contingency_text.set_max_text_width(hor_txt_stretch); contingency_text.redraw();
+cuerat_text.set_max_text_height(vert_txt_stretch); cuerat_text.set_max_text_width(hor_txt_stretch); cuerat_text.redraw();
+during_baseline_text.set_font_size(txt_size);
+during_baseline_text.redraw();
+#startle.set_attenuation(double(reduce_dB_startle)/100.0);
+ima_av_sound_array [permut [cue_set] [1]].set_attenuation(double(reduce_dB_imatraining)/100.0);
+ima_neu_sound_array [permut [cue_set] [2]].set_attenuation(double(reduce_dB_imatraining)/100.0);
+ima_minus_sound_array [permut [cue_set] [3]].set_attenuation(double(reduce_dB_imatraining)/100.0);
+
+#tone_a.set_attenuation(double(reduce_dB_toneA)/100);
+#tone_b.set_attenuation(double(reduce_dB_toneB)/100);
+
+### Letzte Vorbereitungen, Signale checken!
+updateDisplay("Sicher, dass Experiment mit imaginierten Reizen?\n\nWeiter mit [Enter].",255,0,0);
+warten_auf_return();
+
+updateDisplay("Unter 'Auxiliary Sensors' links unten 'GSR1' auswählen\n\n Danach 'Save File' mit folgenden Einstellungen:\nSave Subset: 'A1 - B32 (64)'\nHäkchen bei 'Add 8 EX electrodes'\nHäkchen bei 'Add Displayed Sensors'\n\nWeiter mit [Enter].",255,0,0);
+warten_auf_return();
+
+updateDisplay("Nimmt der Recorder auf? Unten rechts müssen Not Saving und Paused stehen\n\nWeiter mit [Enter].",255,0,0);
+warten_auf_return();
+
+updateDisplay("Signalqualität nochmal checken! Mit [Enter] startet der Versuch.",255,0,0);
+warten_auf_return();
+
+
+############################################
+##### der eigentliche Versuch geht los #####
+############################################
+
+# First instruction screen (and baseline if set)
+
+if  baseline_phase > 0 then
+	updateDisplay("VP Bescheid sagen, dass Experiment jetzt mit der Ruhephase losgeht und dass weitere Instruktionen auf dem Bildschirm kommen.\n\n Weiter mit [Enter].", 255, 0, 0);
+	warten_auf_return();	
+	giveInstructions(welcome_withBL_instruct_ima, 0);
+	giveInstructions(baseline_instruct,0);
+	Biosemi(1,bs_startcode);
+	present_baseline(baseline_phase, pc_startbase, pc_endbase);
+	Biosemi(0,bs_endcode);
+	signal_sound.present();
+elseif baseline_phase == 0 then
+	giveInstructions(welcome_withoutBL_instruct_ima, 0);
+end;	
+
+# instructions for startle habituation
+#instruct_text.set_caption(startlehab_instruct);
+#instruct_text.redraw();
+#instruct_trial.present();
+
+# startle habituation
+#Biosemi(1,bs_startcode);
+#startle_hab(nr_startle_habs, starthabmin, starthabmax);
+#Biosemi(0,bs_endcode);
+
+#instruct_text.set_caption(startlerating_instruct);
+#instruct_text.redraw();
+#instruct_trial.present();
+
+#startle_hab(1,1,1); # single startle presentation for rating purposes; no recording
+#startle_abfragen();
+
+pleasewait_pic.present();
+pause("Instruktionen für Imaginationsskripte\n\nDanach weiter mit [Enter].");
+
+# imagination scripts
+giveInstructions(imatraining_instruct, 0);
+ima_av_trial.present();
+geompic_array [permut [cue_set] [1]].present(); wait_interval(5000); # present cue somewhat longer than length of soundfile
+
+giveInstructions(imapause_instruct_neu, 0);
+ima_neu_trial.present();
+geompic_array [permut [cue_set] [2]].present(); wait_interval(5000);# present cue somewhat longer than length of soundfile
+
+giveInstructions(imapause_instruct_minus, 0);
+ima_minus_trial.present();
+geompic_array [permut [cue_set] [3]].present(); wait_interval(5000); # present cue somewhat longer than length of soundfile
+
+# repeat cue-script associations visually
+giveInstructions(intro_instruct, 0);
+instruct_pic.set_part_y(1,150);
+instruct_pic.add_part(geom_square,0,-150);
+intro_cue(intro_cueplus_av_instruct, permut, cue_set, 1);
+intro_cue(intro_cueplus_neu_instruct, permut, cue_set, 2);
+intro_cue(intro_cueminus_instruct, permut, cue_set, 3);
+intro_cue(intro_cueplus_av_instruct, permut, cue_set, 1);
+intro_cue(intro_cueplus_neu_instruct, permut, cue_set, 2);
+intro_cue(intro_cueminus_instruct, permut, cue_set, 3);
+
+
+# experimenter assesses learned contingencies and may start additional learning trials (or continue with the experiment
+loop
+	bool learned = false
+until
+	learned == true
+begin
+	updateDisplay("VP fragen, was er/sie bei den Cues imaginieren soll.\n\nWenn korrekt, startet mit [1] der Versuch.\n\nWenn falsch, gibt es mit [0] einen weiteren Lerndurchgang.\n\n" + symstrings[permut [cue_set] [1]] + " = Stromschlag, " + symstrings[permut [cue_set] [2]] + " = Vibration, " + symstrings[permut [cue_set] [3]] + " = Nichts",255,0,0);
+	wait_for_experimenter.present();
+	display_window.erase();
+	
+	if response_manager.last_response() == 13 then
+		learned = true;
+	elseif response_manager.last_response() == 14 then
+		add_learn_trials[1] = add_learn_trials[1] + 1;
+		intro_cue(intro_cueplus_av_instruct, permut, cue_set, 1);
+		intro_cue(intro_cueplus_neu_instruct, permut, cue_set, 2);
+		intro_cue(intro_cueminus_instruct, permut, cue_set, 3);
+	end;
+end;
+
+
+instruct_pic.set_part_y(1,0);
+instruct_pic.remove_part(2);
+
+giveInstructions(cuerating_instruct,0);
+cue_abfragen();
+
+
+pleasewait_pic.present();
+pause("Instruktionen für Konditionierungsparadigma\n(beginnt mit Rating und Habituation)\n\nDanach weiter mit [Enter].");
+
+giveInstructions(rating_instruct,0);
+cs_abfragen();
+
+
+### habituation ###
+
+loop
+	int bl = 1
+until
+	bl > hab_blocks
+begin
+	if (bl == 1) then
+		giveInstructions(hab_instruct,0);
+		Biosemi(1,bs_startcode);
+		parallel.send_code(pc_starthab);
+	else
+		giveInstructions(pause_instruct,0);
+		Biosemi(1,bs_startcode);
+	end;
+	
+	hab_type.shuffle();
+	
+	if wait_blockstart > 0 then
+		waiting_event.set_duration(wait_blockstart);
+		waiting_trial.present();
+	end;
+	
+	loop
+		int i = 1
+	until
+		i > hab_type.count()
+	begin
+		updateDisplay("Habituation\n\nBlock "+ string(bl)+ " / " + string(hab_blocks) + "\n\nTrial " + string(i) + " / " + string(hab_type.count()),0,255,0);
+
+		if hab_type [i] == 10 then
+			isi_plus_av_event.set_duration(random(min_jit,max_jit));
+			cs_plus_av_trial.present();
+		elseif hab_type [i] == 20 then
+			isi_plus_neu_event.set_duration(random(min_jit,max_jit));
+			cs_plus_neu_trial.present();
+		elseif hab_type [i] == 30 then
+			isi_minus_event.set_duration(random(min_jit,max_jit));
+			cs_minus_trial.present();
+		end;
+		
+	i = i+1;
+	end;
+
+	if bl == hab_blocks then
+		parallel.send_code(pc_endhab);
+	end;
+	
+	Biosemi(0,bs_endcode);	
+	
+	bl = bl + 1;
+end;
+
+
+		
+giveInstructions(rating_instruct,0);		
+cs_abfragen();
+
+### acquisition ###
+
+
+loop
+	int bl = 1
+until
+	bl > main_blocks
+begin
+	if restrict_shuffling == true then
+		restricted_shuffle(trial_type, 2);
+	elseif restrict_shuffling == false then
+		trial_type.shuffle();
+	end;
+	cue_plus_av_array.shuffle();
+	cue_plus_neu_array.shuffle();
+	cue_minus_array.shuffle();
+	
+	if (bl == 1) then # block 1? => show instruction screen and start BioSemi
+		giveInstructions(main_instruct_ima,0);
+		Biosemi(1,bs_startcode);
+		parallel.send_code(pc_startmain);
+		wait_interval(100); # to avoid port conflicts
+	else
+		giveInstructions(pause_instruct,0); # different block? = show pause text and start BioSemi
+		Biosemi(1,bs_startcode);
+	end;
+	
+	if main_block_counter > 0 then # send port code for new block
+		parallel.send_code(main_block_counter);
+		main_block_counter = main_block_counter + 1;
+		wait_interval(100);
+	end;
+	
+	if wait_blockstart > 0 then # wait before the first trial
+		waiting_event.set_duration(wait_blockstart);
+		waiting_trial.present();
+	end;
+	
+	loop
+		int tr = 1;
+		int times_cue_plus_av = 1;
+		int times_cue_plus_neu = 1;
+		int times_cue_minus = 1;
+	until
+		tr > trial_type.count()
+	begin
+		# experimenter's screen:
+		updateDisplay("Akquisition\n\nBlock "+ string(bl)+ " / " + string(main_blocks) + "\n\nTrial "+ string(tr) + " / " + string(trial_type.count()),0,255,0);
+		
+		int isi_this_time = random(min_jit,max_jit); # random jitter duration
+		
+		if trial_type [tr] < 13 then # if CS+ av
+			
+			isi_plus_av_event.set_duration(isi_this_time); # set jitter duration
+			
+			# settings for present / absent cue
+			if cue_plus_av_array[times_cue_plus_av] == 1 then 
+				cue_plus_av_event.set_stimulus (cue_plus_av);
+				cue_plus_av_event.set_port_code(pc_cueplus_av);
+				cue_plus_av_event.set_event_code("cue_plus_av");
+				cs_plus_av_event.set_duration(cue_onset);
+			elseif cue_plus_av_array[times_cue_plus_av] == 0 then
+				cue_plus_av_event.set_stimulus (nothing_stim);
+				cue_plus_av_event.set_port_code(0);
+				cue_plus_av_event.set_event_code("");
+				cs_plus_av_event.set_duration(cs_dur);
+			end;
+				
+			if trial_type[tr] == 11 then # if CS+ av with CS startle
+				stimulus_event startle_plus_av_event = cs_plus_av_trial.add_stimulus_event(startle,2);
+				startle_plus_av_event.set_parallel(true);
+				startle_plus_av_event.set_port_code(pc_startle_csp_av);
+				startle_plus_av_event.set_event_code("startle_cs_plus_av");
+				if cs_startle_window == 1 then # when is startle allowed to occur?
+					startle_plus_av_event.set_time(random(no_startle_begin + 1,cs_dur - dur_startle - no_startle_end));
+				elseif cs_startle_window == 2 then
+					startle_plus_av_event.set_time(random(no_startle_begin + 1,cue_onset - dur_startle - no_startle_end));
+				elseif cs_startle_window == 3 then
+					startle_plus_av_event.set_time(random(cue_onset + 1,cs_dur - dur_startle - no_startle_end));
+				end;
+				
+			elseif trial_type[tr] == 12 then # if CS+ av with ISI startle
+				stimulus_event startle_plus_av_event = cs_plus_av_trial.add_stimulus_event(startle,4);
+				startle_plus_av_event.set_parallel(true);
+				startle_plus_av_event.set_port_code(pc_startle_isip_av);
+				startle_plus_av_event.set_event_code("startle_isi_plus_av");
+				startle_plus_av_event.set_time(random(cs_dur + no_startle_begin + 1,cs_dur + isi_this_time - dur_startle - no_startle_end));
+			end;
+
+			cs_plus_av_trial.present(); # present the trial
+				
+			# startle event needs to be removed after each trial to avoid crashes	
+			if trial_type[tr] == 11 then
+				cs_plus_av_trial.remove_stimulus_event(2);
+			elseif trial_type[tr] == 12 then
+				cs_plus_av_trial.remove_stimulus_event(4);
+			end;
+			
+			times_cue_plus_av = times_cue_plus_av + 1; # counter for Cue-array (yes/no)
+
+
+		elseif (trial_type [tr] < 23) then # if CS+ neu
+
+			isi_plus_neu_event.set_duration(isi_this_time); # random jitter duration
+			
+			# settings for present / absent cue
+			if cue_plus_neu_array[times_cue_plus_neu] == 1 then
+				cue_plus_neu_event.set_stimulus (cue_plus_neu);
+				cue_plus_neu_event.set_port_code(pc_cueplus_neu);
+				cue_plus_neu_event.set_event_code("cue_plus_neu");
+				cs_plus_neu_event.set_duration(cue_onset);
+			elseif cue_plus_neu_array[times_cue_plus_neu] == 0 then
+				cue_plus_neu_event.set_stimulus (nothing_stim);
+				cue_plus_neu_event.set_port_code(0);
+				cue_plus_neu_event.set_event_code("");
+				cs_plus_neu_event.set_duration(cs_dur);
+			end;
+			
+			if trial_type[tr] == 21 then # if CS+ av with CS startle
+				stimulus_event startle_plus_neu_event = cs_plus_neu_trial.add_stimulus_event(startle,2);
+				startle_plus_neu_event.set_parallel(true);
+				startle_plus_neu_event.set_port_code(pc_startle_csp_neu);
+				startle_plus_neu_event.set_event_code("startle_cs_plus_neu");
+				if cs_startle_window == 1 then # when is startle allowed to occur?
+					startle_plus_neu_event.set_time(random(no_startle_begin + 1,cs_dur - dur_startle - no_startle_end));
+				elseif cs_startle_window == 2 then
+					startle_plus_neu_event.set_time(random(no_startle_begin + 1,cue_onset - dur_startle - no_startle_end));
+				elseif cs_startle_window == 3 then
+					startle_plus_neu_event.set_time(random(cue_onset + 1,cs_dur - dur_startle - no_startle_end));
+				end;
+			elseif trial_type[tr] == 22 then # if CS+ av with ISI startle
+				stimulus_event startle_plus_neu_event = cs_plus_neu_trial.add_stimulus_event(startle,4);
+				startle_plus_neu_event.set_parallel(true);
+				startle_plus_neu_event.set_port_code(pc_startle_isip_neu);
+				startle_plus_neu_event.set_event_code("startle_isi_plus_neu");
+				startle_plus_neu_event.set_time(random(cs_dur + no_startle_begin + 1,cs_dur + isi_this_time - dur_startle - no_startle_end));
+			end;
+
+			cs_plus_neu_trial.present();
+			
+			# startle event needs to be removed after each trial to avoid crashes
+			if trial_type[tr] == 21 then
+				cs_plus_neu_trial.remove_stimulus_event(2);
+			elseif trial_type[tr] == 22 then
+				cs_plus_neu_trial.remove_stimulus_event(4);
+			end;
+							
+			times_cue_plus_neu = times_cue_plus_neu + 1; # counter for Cue-array (yes/no)
+
+
+		elseif (trial_type [tr] > 29) then # if CS-
+				
+			isi_minus_event.set_duration(isi_this_time); # random jitter duration
+			
+			# settings for present / absent cue
+			if cue_minus_array[times_cue_minus] == 1 then
+				cue_minus_event.set_stimulus (cue_minus);
+				cue_minus_event.set_port_code(pc_cueminus);
+				cue_minus_event.set_event_code("cue_minus");
+				cs_minus_event.set_duration(cue_onset);
+			elseif cue_minus_array[times_cue_minus] == 0 then
+				cue_minus_event.set_stimulus (nothing_stim);
+				cue_minus_event.set_port_code(0);
+				cue_minus_event.set_event_code("");
+				cs_minus_event.set_duration(cs_dur);
+			end;
+			
+			if trial_type[tr] == 31 then # if CS- with CS startle
+				stimulus_event startle_minus_event = cs_minus_trial.add_stimulus_event(startle,2);
+				startle_minus_event.set_parallel(true);
+				startle_minus_event.set_port_code(pc_startle_csm);
+				startle_minus_event.set_event_code("startle_cs_minus");
+				if cs_startle_window == 1 then
+					startle_minus_event.set_time(random(no_startle_begin + 1,cs_dur - dur_startle - no_startle_end));
+				elseif cs_startle_window == 2 then
+					startle_minus_event.set_time(random(no_startle_begin + 1,cue_onset - dur_startle - no_startle_end));
+				elseif cs_startle_window == 3 then
+					startle_minus_event.set_time(random(cue_onset + 1,cs_dur - dur_startle - no_startle_end));
+				end;
+				
+			elseif trial_type[tr] == 32 then # if CS- with ISI startle
+				stimulus_event startle_minus_event = cs_minus_trial.add_stimulus_event(startle,4);
+				startle_minus_event.set_parallel(true);
+				startle_minus_event.set_port_code(pc_startle_isim);
+				startle_minus_event.set_event_code("startle_isi_minus");
+				startle_minus_event.set_time(random(cs_dur + no_startle_begin + 1,cs_dur + isi_this_time - dur_startle - no_startle_end));
+				
+			end;
+
+			cs_minus_trial.present(); # present the trial
+			
+			# startle event needs to be removed after each trial to avoid crashes
+			if trial_type[tr] == 31 then
+				cs_minus_trial.remove_stimulus_event(2);
+			elseif trial_type[tr] == 32 then
+				cs_minus_trial.remove_stimulus_event(4);
+			end;
+						
+			times_cue_minus = times_cue_minus + 1; # counter for Cue-array (yes/no)
+			
+		end;
+
+	tr = tr + 1;
+	end;
+
+	if main_block_counter > 0 then # sent port code for end of block
+		parallel.send_code(main_block_counter);
+		main_block_counter = main_block_counter + 1;
+		wait_interval(100);
+	end;
+	
+	if bl == main_blocks then # send port code for end of main phase
+		parallel.send_code(pc_endmain);
+	end;
+	
+	Biosemi(0,bs_endcode); # stopp BioSemi
+	
+	giveInstructions(rating_instruct,0);
+	cs_abfragen(); # pleasantness und arousal ratings for CS
+	
+	giveInstructions(cuerating_instruct,0);
+	cue_abfragen(); # cue ratings
+
+	bl = bl + 1;
+end;
+
+/* FROM PAST VERSION - NO GUARANTEE THAT IT IS WORKING WHEN UNCOMMENTED
+### extinction ###
+
+# clear cues
+cue_plus_av_event.set_stimulus (nothing_stim);
+cue_plus_av_event.set_port_code(0);
+cue_plus_av_event.set_event_code("");
+cs_plus_av_event.set_duration(cs_dur);
+cue_plus_neu_event.set_stimulus (nothing_stim);
+cue_plus_neu_event.set_port_code(0);
+cue_plus_neu_event.set_event_code("");
+cs_plus_neu_event.set_duration(cs_dur);
+cue_minus_event.set_stimulus (nothing_stim);
+cue_minus_event.set_port_code(0);
+cue_minus_event.set_event_code("");
+cs_minus_event.set_duration(cs_dur);
+
+loop
+	int bl = 1
+until
+	bl > ext_blocks
+begin
+	if restrict_shuffling == true then
+		restricted_shuffle(trial_type_ext, 2);
+	elseif restrict_shuffling == false then
+		trial_type_ext.shuffle();
+	end;
+	
+	if (bl == 1) then
+		#instruct_text.set_caption(ext_instruct);
+		instruct_text.set_caption(pause_instruct);
+		instruct_text.redraw();
+		instruct_trial.present();
+		Biosemi(1,bs_startcode);
+		parallel.send_code(pc_startext);
+		wait_interval(100); # to avoid port conflicts
+	else
+		instruct_text.set_caption(pause_instruct);
+		instruct_text.redraw();
+		instruct_trial.present();
+		Biosemi(1,bs_startcode);
+	end;
+	
+	if main_block_counter > 0 then
+		parallel.send_code(main_block_counter);
+		main_block_counter = main_block_counter + 1;
+		wait_interval(100);
+	end;
+	
+	if wait_blockstart > 0 then
+		waiting_event.set_duration(wait_blockstart);
+		waiting_trial.present();
+	end;
+	
+	loop
+		int tr = 1;
+	until
+		tr > trial_type_ext.count()
+	begin
+		display_window.erase();
+		display_window.set_text_color(0, 0, 255);
+		display_window.draw_text ("Extinktion\n\nBlock "+ string(bl)+ " / " + string(ext_blocks) + "\n\nTrial "+ string(tr) + " / " + string(trial_type_ext.count()));
+		
+		int isi_this_time = random(min_jit,max_jit);
+		
+		if trial_type_ext [tr] < 13 then
+			
+			isi_plus_av_event.set_duration(isi_this_time);
+			
+			if trial_type_ext[tr] == 11 then
+				stimulus_event startle_plus_av_event = cs_plus_av_trial.add_stimulus_event(startle,2);
+				startle_plus_av_event.set_parallel(true);
+				startle_plus_av_event.set_port_code(pc_startle_csp_av);
+				startle_plus_av_event.set_event_code("startle_cs_plus_av");
+				if cs_startle_window == 1 then
+					startle_plus_av_event.set_time(random(no_startle_begin,cs_dur - dur_startle - no_startle_end));
+				elseif cs_startle_window == 2 then
+					startle_plus_av_event.set_time(random(no_startle_begin,cue_onset - dur_startle - no_startle_end));
+				elseif cs_startle_window == 3 then
+					startle_plus_av_event.set_time(random(cue_onset,cs_dur - dur_startle - no_startle_end));
+				end;
+			elseif trial_type_ext[tr] == 12 then
+				stimulus_event startle_plus_av_event = cs_plus_av_trial.add_stimulus_event(startle,4);
+				startle_plus_av_event.set_parallel(true);
+				startle_plus_av_event.set_port_code(pc_startle_isip_av);
+				startle_plus_av_event.set_event_code("startle_isi_plus_av");
+				startle_plus_av_event.set_time(random(cs_dur + no_startle_begin,cs_dur + isi_this_time - dur_startle - no_startle_end));
+			end;
+
+			cs_plus_av_trial.present();
+				
+			# startle event needs to be removed after each trial to avoid crashes	
+			if trial_type_ext[tr] == 11 then
+				cs_plus_av_trial.remove_stimulus_event(2);
+			elseif trial_type_ext[tr] == 12 then
+				cs_plus_av_trial.remove_stimulus_event(4);
+			end;
+			
+			
+		elseif (trial_type_ext [tr] < 23) then
+
+			isi_plus_neu_event.set_duration(isi_this_time);
+			
+			if trial_type_ext[tr] == 21 then
+				stimulus_event startle_plus_neu_event = cs_plus_neu_trial.add_stimulus_event(startle,2);
+				startle_plus_neu_event.set_parallel(true);
+				startle_plus_neu_event.set_port_code(pc_startle_csp_neu);
+				startle_plus_neu_event.set_event_code("startle_cs_plus_neu");
+				if cs_startle_window == 1 then
+					startle_plus_neu_event.set_time(random(no_startle_begin,cs_dur - dur_startle - no_startle_end));
+				elseif cs_startle_window == 2 then
+					startle_plus_neu_event.set_time(random(no_startle_begin,cue_onset - dur_startle - no_startle_end));
+				elseif cs_startle_window == 3 then
+					startle_plus_neu_event.set_time(random(cue_onset,cs_dur - dur_startle - no_startle_end));
+				end;
+			elseif trial_type_ext[tr] == 22 then
+				stimulus_event startle_plus_neu_event = cs_plus_neu_trial.add_stimulus_event(startle,4);
+				startle_plus_neu_event.set_parallel(true);
+				startle_plus_neu_event.set_port_code(pc_startle_isip_neu);
+				startle_plus_neu_event.set_event_code("startle_isi_plus_neu");
+				startle_plus_neu_event.set_time(random(cs_dur + no_startle_begin,cs_dur + isi_this_time - dur_startle - no_startle_end));
+			end;
+
+			cs_plus_neu_trial.present();
+				
+			# startle event needs to be removed after each trial to avoid crashes
+			if trial_type_ext[tr] == 21 then
+				cs_plus_neu_trial.remove_stimulus_event(2);
+			elseif trial_type_ext[tr] == 22 then
+				cs_plus_neu_trial.remove_stimulus_event(4);
+			end;
+			
+			
+		elseif (trial_type_ext [tr] > 29) then
+				
+			isi_minus_event.set_duration(isi_this_time);
+			
+			if trial_type_ext[tr] == 31 then
+				stimulus_event startle_minus_event = cs_minus_trial.add_stimulus_event(startle,2);
+				startle_minus_event.set_parallel(true);
+				startle_minus_event.set_port_code(pc_startle_csm);
+				startle_minus_event.set_event_code("startle_cs_minus");
+				if cs_startle_window == 1 then
+					startle_minus_event.set_time(random(no_startle_begin,cs_dur - dur_startle - no_startle_end));
+				elseif cs_startle_window == 2 then
+					startle_minus_event.set_time(random(no_startle_begin,cue_onset - dur_startle - no_startle_end));
+				elseif cs_startle_window == 3 then
+					startle_minus_event.set_time(random(cue_onset,cs_dur - dur_startle - no_startle_end));
+				end;
+			elseif trial_type_ext[tr] == 32 then
+				stimulus_event startle_minus_event = cs_minus_trial.add_stimulus_event(startle,4);
+				startle_minus_event.set_parallel(true);
+				startle_minus_event.set_port_code(pc_startle_isim);
+				startle_minus_event.set_event_code("startle_isi_minus");
+				startle_minus_event.set_time(random(cs_dur + no_startle_begin,cs_dur + isi_this_time - dur_startle - no_startle_end));
+			end;
+
+			cs_minus_trial.present();
+
+			# startle event needs to be removed after each trial to avoid crashes
+			if trial_type_ext[tr] == 31 then
+				cs_minus_trial.remove_stimulus_event(2);
+			elseif trial_type_ext[tr] == 32 then
+				cs_minus_trial.remove_stimulus_event(4);
+			end;
+			
+		end;
+
+	tr = tr + 1;
+	end;
+
+	if main_block_counter > 0 then
+		parallel.send_code(main_block_counter);
+		main_block_counter = main_block_counter + 1;
+		wait_interval(100);
+	end;
+
+	if bl == ext_blocks then
+		parallel.send_code(pc_endext);
+	end;
+	
+	Biosemi(0,bs_endcode);
+	
+	instruct_text.set_caption(rating_instruct);
+	instruct_text.redraw();
+	instruct_trial.present();
+	cs_abfragen(); #pleasantness und arousal für jedes Gesicht abfragen
+	
+	if (bl == reinst_after_block) then
+		instruct_text.set_caption(reinst_instruct);
+		instruct_text.redraw();
+		instruct_trial.present();
+		Biosemi(1,bs_startcode);
+		reinst_trial.present();
+		Biosemi(0,bs_endcode);
+		
+		instruct_text.set_caption(rating_instruct);
+		instruct_text.redraw();
+		instruct_trial.present();
+		cs_abfragen(); #pleasantness und arousal für jedes Gesicht abfragen
+		
+		instruct_text.set_caption(cuerating_instruct);
+		instruct_text.redraw();
+		instruct_trial.present();
+		cue_abfragen();
+	end;
+
+	bl = bl + 1;
+end;
+
+
+if (cuerat_at_end == true) then
+	instruct_text.set_caption(cuerating_instruct);
+	instruct_text.redraw();
+	instruct_trial.present();
+	cue_abfragen();
+end;
+*/
+
+### rate startle valence ###
+#instruct_text.set_caption(almostdone_instruct);
+#instruct_text.redraw();
+#instruct_trial.present();
+
+#instruct_text.set_caption(startlerating_instruct);
+#instruct_text.redraw();
+#instruct_trial.present();
+
+#startle_hab(1,1,1); # single startle presentation for rating purposes; no recording
+#startle_abfragen();
+
+
+
+### save ratings ###
+/*
+save_subject_ratings(group_perm, "group_perm");
+save_subject_ratings(p_plus_av, "valence_plus_av");
+save_subject_ratings(p_plus_neu, "valence_plus_neu");
+save_subject_ratings(p_minus, "valence_minus");
+save_subject_ratings(a_plus_av, "arousal_plus_av");
+save_subject_ratings(a_plus_neu, "arousal_plus_neu");
+save_subject_ratings(a_minus, "arousal_minus");
+save_subject_ratings(anx_plus_av, "anxiety_plus_av");
+save_subject_ratings(anx_plus_neu, "anxiety_plus_neu");
+save_subject_ratings(anx_minus, "anxiety_minus");
+save_subject_ratings(ang_plus_av, "anger_plus_av");
+save_subject_ratings(ang_plus_neu, "anger_plus_neu");
+save_subject_ratings(ang_minus, "anger_minus");
+save_subject_ratings(dis_plus_av, "disgust_plus_av");
+save_subject_ratings(dis_plus_neu, "disgust_plus_neu");
+save_subject_ratings(dis_minus, "disgust_minus");
+save_subject_ratings(cont_rat_av, "contingency_av");
+save_subject_ratings(cont_rat_neu, "contingency_neu");
+save_subject_ratings(cuerat_plus_av, "cue_valence_av");
+save_subject_ratings(cuerat_plus_neu, "cue_valence_plus_neu");
+save_subject_ratings(cuerat_minus, "cue_valence_minus");
+#save_subject_ratings(startle_rat, "startle_valence");
+save_subject_ratings(add_learn_trials, "additional_learning_trials");
+*/
+
+add_to_dataset(group_perm);
+#save_subject(big_array, "ratings");
+
+updateDisplay("In BioSemi auf Stop.\n\nVP erlösen!",255,0,0);
+
+giveInstructions(goodbye_instruct,30000);
